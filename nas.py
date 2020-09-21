@@ -418,7 +418,7 @@ def _filter_topo(net_pool, blk_id):
 
     import keras
     keras.backend.clear_session()
-    from TopologyEval import TopologyEval
+    from topology_eval import TopologyEval
 
     pred_consistent_cnt = 0
     pred_cnt = 0
