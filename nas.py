@@ -612,11 +612,4 @@ class Nas:
 if __name__ == '__main__':
     nas = Nas()
     search_result = nas.run()
-    # when interrupt by the error, we can resume from interruption
-    # if "resume_inter" in sys.argv:
-    #     nas = Nas()
-    #     search_result = nas.run()
-    # else:
-    #     nas = Nas()
-    #     search_result = nas.run()
 
