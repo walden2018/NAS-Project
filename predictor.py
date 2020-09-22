@@ -242,6 +242,25 @@ class Feature:
 
 
 class Predictor:
+    '''
+    实现操作配置预测
+
+    通过调用类的唯一接口 predictor(self, pre_block, graph_full)
+    实现功能
+
+    类的实现细节：
+    （1）将pre_block与graph_full合并， 进行重新编码，编码表示在利
+    用lstm网络预测时节点的输入顺序。
+    （2）调用Feature类的feature_nodes方法，对编码的网拓扑结构提取
+    特征。提取的特征如下：节点数目，链数目，最长链的长度，编号，最
+    短链的长度，编号。所有链长度的期望和方差。是否端点的标记，编号
+    ，连接端点的支链的数目。所有连接段端点的支链长度的期望和方差。
+    端点所在支链的最长长度和最短长度，节点在所在链中的相对位置以及
+    该链在网络结构中出现的概率，支链的长度，支链所在端点的编号，与
+    节点所在支链的其他支链中的最长长度和最短长度以及所有这些支链的
+    期望和方差。
+    （3）将提取的特征输入预测模型
+    '''
     def __init__(self):
         self.sess = tf.Session()
         # saver = tf.train.import_meta_graph('./predict_op/ckpt/tfmodel-40000.meta')
@@ -393,11 +412,18 @@ class Predictor:
     # 模块接口
     def predictor(self, pre_block, graph_full):
         '''
-        Method for predicting block's operation
-        
-        :param pre_block: Previous block Networkitem_list
-        :param graph_full: Current block Networkitem
-        :return: Operation of each node in the current block,including size and filters
+        根据输入的网络结构预测每个节点的操作配置
+
+        Args:
+            pre_block: list[graph_full], 要预测的当前block的所有前置block
+            的拓扑结构
+            graph_full: list[[]], 当前需要预测的block的拓扑结构
+        Returns:
+            list[[]], 返回参数graph_full每个节点的操作配置，
+            如：[['96', '11'], ['pooling'], ['256', '3'], ['pooling']]。
+            96表示卷积操作的核数， 11表示卷积核大小。由于在当前版本中，
+            predictor模块只用于预测卷积操作，所以对于输出为pooling的配置
+            会在主控代码中做进一步处理。
         '''
         graph_list = []
         if pre_block:
