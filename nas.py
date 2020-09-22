@@ -14,6 +14,10 @@ if task_name == "denoise":
     from evaluator_denoise import Evaluator
 elif task_name == "SIDD":
     from evaluator_denoise_SIDD import Evaluator
+#  TODO add any other new operations here
+#  use the form as follows
+# elif task_name == "segmentation":
+#     from evaluator_denoise_seg import Evaluator
 else:
     from evaluator_classification import Evaluator
 
