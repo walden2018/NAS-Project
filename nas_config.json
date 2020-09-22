@@ -21,7 +21,7 @@
     "filter_mask": 0,
     "eva_mask": 0,
     "link_node": true,
-    "retrain_switch": 1
+    "retrain_switch": 0
   },
   "enum":{
     "depth": 3,
