@@ -8,36 +8,139 @@
 
 ### 配置文件参数说明（nas_config.json）
 配置文件修改较频繁的参数含义如下：   
-```
-nas_main：   
-    num_gpu：可用gpu个数   
-    block_num：需要搜索block个数    
-    num_opt_best：train_winner阶段的采样次数   
-    spl_network_round：每轮每个网络的采样次数   
-    max_player_nums：经过初筛后参与竞赛的网络最大个数   
-    add_data_per_round：每轮添加数据量   
-    add_data_for_confirm_train：每个block的confim阶段需要数据量，调试时置100，搜索时置-1    
-    repeat_num：每个block搜得结果的堆叠次数        
-    pred_mask：不适用预测模块    
-    filter_mask：不适用拓扑结构初筛模块   
-    link_node：每个block末尾是否添加pooling   
-enum：
-    depth：每个block主链深度   
-    width：支链个数   
-    max_depth：支链最大深度   
-eva：
-    task_name：搜索的实际场景    
-    search_epoch：搜索的epoch设定   
-    confirm_epoch：confim阶段的epoch设定   
-opt：
-    sample_size：负例样本个数    
-    positive_num：正例样本个数   
-    uncertain_bit：每次采样可探索的编码位数   
-spl:
-    skip_max_dist：跨层连接最大距离   
-    skip_max_num：跨层连接最大个数   
-    space：节点操作的搜索空间   
-```
+<table>
+	<tr>
+	    <th>模块</th>   
+	    <th>参数名</th>   
+	    <th>含义</th>   
+	    <th>默认值</th>   
+	    <th>备注</th>   
+	</tr >
+	<tr >
+	    <td rowspan="11">nas_main</td>
+	    <td>num_gpu</td>
+	    <td>可用gpu个数</td>
+	    <td>2</td>
+	    <td>根绝实际机器上的gpu个数来填写</td>
+	</tr>
+	<tr>
+	    <td>block_num</td>
+	    <td>需要搜索block个数</td>
+	    <td>4</td>
+	    <td>结合repeat_num一起控制网络深度，带pooling的情况下，block个数设置不应超过image_size/2</td>
+	</tr>
+	<tr>
+	    <td>num_opt_best</td>
+	    <td>train_winner阶段的采样次数</td>
+	    <td>20</td>
+	    <td>即最优拓扑结构诞生后，在其基础上继续迭代优化节点的次数</td>
+	</tr>
+	<tr>
+	    <td>spl_network_round</td>
+	    <td>每轮每个网络的采样次数</td>
+	    <td>5</td>
+	    <td>在竞赛阶段，每个拓扑结构的表现应该用几次评估表示，搜索时长会随着该值的增大而增大</td>
+	</tr>
+	<tr><td>max_player_nums</td>
+	    <td>经过初筛后参与竞赛的网络最大个数</td>
+	    <td>32</td>
+	    <td>如果经验模块参与搜索，会讲枚举出的拓扑结构个数删减到该值</td>
+	</tr>
+	<tr>
+	    <td>add_data_per_round</td>
+	    <td>每轮添加数据量</td>
+	    <td>1000</td>
+	    <td>如果使用线性添加数据的方法，则该值起作用</td>
+	</tr>
+	<tr>
+	    <td>add_data_for_confirm_train</td>
+	    <td>每个block的confim阶段需要数据量</td>
+	    <td>-1</td>
+	    <td>调试时置100，缩短调试时间，搜索时置-1，添加全量数据</td>
+	</tr>
+	<tr>
+	    <td >repeat_num</td>
+	    <td>每个block搜得结果的堆叠次数</td>
+	    <td>1</td>
+	    <td>如果要加深网络，可以调节此值，将搜得结构堆叠</td>
+	</tr>
+	<tr>
+	    <td >pred_mask</td>
+	    <td>不使用预测模块</td>
+	    <td>0</td>
+	    <td>0表示使用，1表示不使用</td>
+	</tr>
+	<tr>
+	    <td >filter_mask</td>
+	    <td >不使用拓扑结构初筛模块</td>
+	    <td >0</td>
+	    <td >0表示使用，1表示不使用</td>
+	</tr>
+	<tr>
+	    <td >link_node</td>
+	    <td >每个block末尾是否添加pooling</td>
+	    <td >true</td>
+	    <td >true表示添加，一般用于分类，false表示不添加，一般用于去噪</td>
+	</tr>
+	<tr>
+        <td rowspan="3">enum</td>
+	    <td >depth</td>
+	    <td >每个block主链深度</td>
+	    <td >4</td>
+	    <td >不包含末尾添加的pooling</td>
+	</tr>
+	<tr>
+	    <td >width</td>
+	    <td >支链最大个数 </td>
+	    <td >2</td>
+	    <td >枚举模块会在小于等于该值的范围内枚举</td>
+	</tr>
+    <tr>
+	    <td >max_depth</td>
+	    <td >支链最大深度</td>
+	    <td >3</td>
+	    <td >枚举模块会在小于等于该值的范围内枚举</td>
+	</tr>
+    <tr>
+        <td rowspan="3">eva</td>
+	    <td >task_name</td>
+	    <td >搜索的实际场景</td>
+	    <td >cifar-10</td>
+	    <td >主控和评估会根据任务设定读取对应的数据集，添加新场景需要在主控导入模块部分定义新场景名称，然后在此设定即可</td>
+	</tr>
+	<tr>
+	    <td >search_epoch</td>
+	    <td >竞赛阶段的epoch设定</td>
+	    <td >10</td>
+	    <td >值越大，搜索越精确，用时越大</td>
+	</tr>
+    <tr>
+	    <td >confirm_epoch</td>
+	    <td >confim阶段的epoch设定</td>
+	    <td >100</td>
+	    <td >confirm阶段的训练结果用作下一个block的base，需要在充分训练和耗时之间平衡</td>
+	</tr>
+    <tr>
+        <td rowspan="3">spl</td>
+	    <td >skip_max_dist</td>
+	    <td >跨层连接最大距离</td>
+	    <td >3</td>
+	    <td >一般随主链长变化而变化</td>
+	</tr>
+	<tr>
+	    <td >skip_max_num</td>
+	    <td >跨层连接最大个数</td>
+	    <td >2</td>
+	    <td >采样模块在不超过此值之间采样</td>
+	</tr>
+    <tr>
+	    <td >space</td>
+	    <td >节点操作的搜索空间</td>
+	    <td >默认值详见配置文件</td>
+	    <td >默认在已有操作上搜索，如需添加新操作，可按已有格式添加</td>
+	</tr>
+</table>
+
 ### 已包含应用场景
 - 分类（evaluator_classificatoin.py）
 1. cifar10
@@ -49,7 +152,19 @@ spl:
 
 ### 添加新的应用场景
 
-1. 定义搜索场景。主搜索框架与评估的交互界面如下：主控传给评估task_item(EvaScheduleItem实例化的对象，一个实例对应一个任务，内部包含所有该任务的信息)，评估返回给主控评分（将评分填在task_item中返回），因此如需添加新的应用场景，将其定义为新的评估模块即可
+1. 定义搜索场景。主搜索框架与评估的交互界面如下：主控传给评估task_item(EvaScheduleItem实例化的对象，一个实例对应一个任务，内部包含所有该任务的信息)，评估返回给主控评分（将评分填在task_item中返回），因此如需添加新的应用场景，将其定义为新的评估模块即可,接口信息如下：
+```
+·主控与评估的接口函数：
+    score = Evaluator().evaluate(task_item)
+·task_item由主控赋值评估读取的属性：
+    nn_id：当前拓扑结构的编号
+    network_item：当前block的结构
+    pre_block：所有先前block的结构
+    epoch：本次评估需要设定的epoch
+    data_size：本次评估需要添加的数据量
+·task_item由评估赋值主控读取的属性：
+    model_params：本次评估模型的大小
+```
 2. 按照模板evaluator_user.py添加适合于自己特定应用场景的内容, 重命名为evaluator_***.py的格式
 3. 在nas.py加入导入新应用场景评估文件的逻辑，将nas_config.json中task_name设置为新应用场景
 4. 调整搜索配置参数及搜索空间
