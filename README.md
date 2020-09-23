@@ -176,7 +176,7 @@
 ```
 ·预测节点操作模块的预测接口函数:
    Predictor.predictor(pre_block, graph_full)  
-   pre_block:list[graph_full],要预测的当前block的所有前置block  
+   pre_block:list[graph_full...],要预测的当前block的所有前置block  
    graph_full:list[[]], 当前需要预测的block的拓扑结构  
    
 ·预测节点操作模块的训练接口函数：  
@@ -187,8 +187,8 @@
 ·网络质量预测模块接口函数：
    TopologyEval.topo1vstopo2(topo1, topo2, block_id)
    该函数的输入为两组网络拓扑结构
-   topo1:list[[graph_full]], 第一组网络拓扑结构的block集合
-   topo2：list[[graph_full]], 第二组网络拓扑结构的block集合
+   topo1:list[[graph_full...]], 第一组网络拓扑结构的block集合
+   topo2：list[[graph_full...]], 第二组网络拓扑结构的block集合
    block_id:当前block的id,范围为[1,2,3,4]
 ```
 ##### graph_full说明
