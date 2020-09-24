@@ -190,6 +190,7 @@
    topo1:list[[graph_full...]], 第一组网络拓扑结构的block集合
    topo2：list[[graph_full...]], 第二组网络拓扑结构的block集合
    block_id:当前block的id,范围为[1,2,3,4]
+   
 ·网络质量预测模块训练接口函数：
    TopologyEval.train_model()
    该接口不设置参数，所有训练数据从以往实验结果中获取并处理
